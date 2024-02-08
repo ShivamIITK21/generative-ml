@@ -1,10 +1,11 @@
 import math
 import random as r
-import requests
-import base64
+import time
+import sys
+import os
+sys.path.append(os.path.abspath(".."))
+from visual_utils.visualizer import Visualizer
 
-def toB64(s: str):
-    return base64.b64encode(s.encode("ascii"))
 
 class NormalGaussian:
     def __init__(self):
@@ -17,6 +18,9 @@ class NormalGaussian:
         y1 = math.sqrt(-2*math.log(z1))*(math.cos(2*math.pi*z2))
         return y1
 
+    def getLatex(self) -> str:
+        return r"""\frac{e^{\frac{-x^2}{2}}}{\sqrt{2\pi}}"""
+
 class Gaussian(NormalGaussian):
     def __init__(self, mean: float, variance: float):
         self.mean = mean
@@ -27,23 +31,28 @@ class Gaussian(NormalGaussian):
         s = super().sample()
         return self.sd*s + self.mean 
 
+    def getLatex(self) -> str:
+        return r"""\frac{e^{\frac{-(x - """ + f"""{self.mean}""" + r""")^2}{2*""" + f"""{self.variance}""" + r"""}}}{\sqrt{2\pi *""" + f"""{self.variance}""" + r"""}}""" 
+
+
+    def visualize(self, N: int, ts: float, multiplier: int):
+        visual = Visualizer()
+        counts = {}
+        visual.draw("norm", self.getLatex())
+        for i in range(1, N+1):
+            v = dist.sample()
+            rounded = round(10*v)/10
+            if rounded not in counts: 
+                counts[rounded] = 1
+            else :
+                counts[rounded] += 1
+
+            for k, v in counts.items():
+                prob = (v/i)*multiplier
+                visual.draw(str(k), visual.getLatexKV(k, prob))
+            time.sleep(ts)
+
+
 if __name__ == "__main__":
-    dist = Gaussian(1, 2)
-    counts = {}
-    # requests.get(url = "http://localhost:8080/add", params={"id": toB64("norm"), "exp": toB64(r"""\frac{e^{\frac{-x^2}{2}}}{\sqrt{2\pi}}""")})
-    for _ in range(0, 1000):
-        v = dist.sample()
-        rounded = round(10*v)/10
-        if rounded not in counts: 
-            counts[rounded] = 1
-        else :
-            counts[rounded] += 1
-    scounts = dict(sorted(counts.items()))
-    mean = sum([k*v for (k, v) in scounts.items()])/1000 
-    var = sum([v*(k-mean)*(k-mean) for (k, v) in scounts.items()])
-    var1 = var/1000 
-    var2 = var/(1000-1)
-    print(scounts)
-    print(mean)
-    print(var1)
-    print(var2)
+    dist = Gaussian(0, 0.1)
+    dist.visualize(1000, 0.1, 10)

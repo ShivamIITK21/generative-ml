@@ -14,6 +14,8 @@ class Bernoulli:
         inx = bisect.bisect_left(self.cumulative_probs, uni_random, lo = 0, hi = len(self.cumulative_probs))
         return inx
 
+    def getProbs(self) -> list[float]:
+        return self.probs
 
     def __calcCumulativeProbs(self) -> list[float]:
         cprobs: list[float] = []
@@ -22,13 +24,3 @@ class Bernoulli:
             sum += x
             cprobs.append(sum)
         return cprobs
-
-
-if __name__ == "__main__":
-    probs = [0.1, 0.2, 0.3, 0.4]
-    dist = Bernoulli(probs)
-    counts = [0, 0, 0, 0]
-    for _ in range(0, 100000):
-        s = dist.sample()
-        counts[s] += 1
-    print(counts)
