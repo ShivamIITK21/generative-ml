@@ -1,2 +1,2 @@
 [tool.pyright]
-include = ["distributions"]
+include = ["distributions", "visual_utils"]
