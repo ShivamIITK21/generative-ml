@@ -20,7 +20,7 @@ class GaussianMixture:
         counts = {}
         visual.draw("mg", self.getLatex())
         for i in range(1, N+1):
-            v = dist.sample()
+            v = self.sample()
             rounded = round(10*v)/10
             if rounded not in counts: 
                 counts[rounded] = 1
@@ -32,6 +32,3 @@ class GaussianMixture:
                 visual.draw(str(k), visual.getLatexKV(k, prob))
             time.sleep(ts)
 
-if __name__ == "__main__":
-    dist = GaussianMixture([0,1,3],[0.1,0.1,0.1],[0.3,0.2,0.5])
-    dist.visualize(1000, 0.1, 10)

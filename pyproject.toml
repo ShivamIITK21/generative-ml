@@ -1,2 +1,6 @@
 [tool.pyright]
-include = ["distributions", "visual_utils"]
+include = ["distributions", "visual_utils", "/home/shivam/generative-ml-algorithms/env/lib/python3.12/site-packages/numpy"]
+[venv]
+venvPath = "env"
+
+   

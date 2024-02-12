@@ -1,9 +1,6 @@
 import math
 import random as r
 import time
-import sys
-import os
-sys.path.append(os.path.abspath(".."))
 from visual_utils.visualizer import Visualizer
 
 
@@ -40,7 +37,7 @@ class Gaussian(NormalGaussian):
         counts = {}
         visual.draw("norm", self.getLatex())
         for i in range(1, N+1):
-            v = dist.sample()
+            v = self.sample()
             rounded = round(10*v)/10
             if rounded not in counts: 
                 counts[rounded] = 1
@@ -53,6 +50,3 @@ class Gaussian(NormalGaussian):
             time.sleep(ts)
 
 
-if __name__ == "__main__":
-    dist = Gaussian(0, 0.1)
-    dist.visualize(1000, 0.1, 10)
