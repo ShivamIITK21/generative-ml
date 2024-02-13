@@ -28,9 +28,17 @@ class Gaussian(NormalGaussian):
         s = super().sample()
         return self.sd*s + self.mean 
 
+    def probDensity(self, x: float) -> float:
+        return (1/math.sqrt(2*math.pi*self.variance))*(math.exp((-1*(x-self.mean)*(x-self.mean))/(2*self.variance)))
+
     def getLatex(self) -> str:
         return r"""\frac{e^{\frac{-(x - """ + f"""{self.mean}""" + r""")^2}{2*""" + f"""{self.variance}""" + r"""}}}{\sqrt{2\pi *""" + f"""{self.variance}""" + r"""}}""" 
 
+    def getMean(self):
+        return self.mean
+
+    def getVar(self):
+        return self.variance
 
     def visualize(self, N: int, ts: float, multiplier: int):
         visual = Visualizer()

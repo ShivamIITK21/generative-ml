@@ -1,5 +1,5 @@
-from gaussian import Gaussian
-from bernoulli import Bernoulli
+from distributions.gaussian import Gaussian
+from distributions.bernoulli import Bernoulli
 import time
 from visual_utils.visualizer import Visualizer
 
@@ -10,11 +10,26 @@ class GaussianMixture:
 
     def sample(self) -> float:
         return self.gaussians_dists[self.bernouli_dist.sample()].sample() 
+    
+    def probDensity(self, x: float):
+        return sum([prob*g.probDensity(x) for (prob, g) in zip(self.bernouli_dist.getProbs(), self.gaussians_dists)])
 
     def getLatex(self) -> str:
         parts = [f"""{prob}""" + "*" + gauss.getLatex() for (prob, gauss) in zip(self.bernouli_dist.getProbs(), self.gaussians_dists)]
         return " + ".join(parts)
     
+    def ithGaussian(self, idx: int) -> Gaussian:
+        return self.gaussians_dists[idx]
+
+    def updateBernoilliProbs(self, new_probs: list[float]):
+        self.bernouli_dist = Bernoulli(new_probs)
+    
+    def updateGaussians(self, new_means: list[float], new_vars: list[float]):
+        self.gaussians_dists = [Gaussian(mean, var) for (mean, var) in zip(new_means, new_vars)]
+
+    def getAllParams(self):
+        return (self.bernouli_dist.getProbs(), [g.getMean() for g in self.gaussians_dists], [g.getVar() for g in self.gaussians_dists])
+
     def visualize(self, N: int, ts: float, multiplier: int):
         visual = Visualizer()
         counts = {}
