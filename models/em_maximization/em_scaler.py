@@ -1,16 +1,23 @@
 from distributions.gaussian_mixture import GaussianMixture  
 import random as r
+import time
+
+from visual_utils.visualizer import Visualizer
 
 class EMScaler:
-    def __init__(self, data: list[float], num_latent: int):
-        self.data = data
+    def __init__(self, num_latent: int):
+        self.data = []
         self.num_latent = num_latent
         self.bernoulli_probs = [(1/num_latent)]*num_latent
         self.means = [r.uniform(-2, 2) for _ in range(num_latent)]
         self.vars = [r.uniform(0.01,2) for _ in range(num_latent)]
         self.gaussian_mix = GaussianMixture(self.means, self.vars, self.bernoulli_probs)
 
+    def setData(self, data: list[float]):
+        self.data = data
+        
     def EStep(self):
+        assert(len(self.data) != 0)
         q_z = [[0.0]*self.num_latent for _ in range(0, len(self.data))]
 
         # O(n*k) currently, probably could make it faster using some vectorization
@@ -23,6 +30,7 @@ class EMScaler:
         return q_z
 
     def MStep(self, q_z: list[list[float]]):
+        assert(len(self.data) != 0)
         Nk:list[float] = [sum(i) for i in zip(*q_z)]
         new_probs = [i/len(self.data) for i in Nk]
         new_means = []
@@ -47,3 +55,20 @@ class EMScaler:
             new_probs, new_means, new_vars = self.MStep(q_z)
             self.gaussian_mix.updateBernoilliProbs(new_probs)
             self.gaussian_mix.updateGaussians(new_means, new_vars)
+
+    def visualize(self, vis: Visualizer, target: GaussianMixture):
+        train_data = target.sampleDummy(10000)
+        vis.plotPoints(train_data, 10)
+        data_list = ([[k]*v for (k, v) in train_data.items()])
+        data = [x for xs in data_list for x in xs]
+        self.setData(data)
+        vis.draw("model",self.gaussian_mix.getLatex())
+        for i in range(0, 1000):
+            print(f"{i} iteration...")
+            q = self.EStep()
+            new_probs, new_means, new_vars = self.MStep(q)
+            self.gaussian_mix.updateBernoilliProbs(new_probs)
+            self.gaussian_mix.updateGaussians(new_means, new_vars)
+            vis.remove("model")
+            vis.draw("model", self.gaussian_mix.getLatex())
+            time.sleep(0.2)
