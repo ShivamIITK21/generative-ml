@@ -7,7 +7,7 @@ class EMScaler:
         self.num_latent = num_latent
         self.bernoulli_probs = [(1/num_latent)]*num_latent
         self.means = [r.uniform(-2, 2) for _ in range(num_latent)]
-        self.vars = [r.uniform(0,2) for _ in range(num_latent)]
+        self.vars = [r.uniform(0.01,2) for _ in range(num_latent)]
         self.gaussian_mix = GaussianMixture(self.means, self.vars, self.bernoulli_probs)
 
     def EStep(self):

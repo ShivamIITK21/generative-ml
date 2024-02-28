@@ -9,7 +9,6 @@ if __name__ == "__main__":
 
     vis = Visualizer()
     vis.plotPoints(train_data, 10)
-
     data_list = ([[k]*v for (k, v) in train_data.items()])
     data = [x for xs in data_list for x in xs]
     # data = [1.0, 2.0, 3.0, 4.0]
