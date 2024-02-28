@@ -20,4 +20,9 @@ class Visualizer:
     def getLatexKV(key: float, val: float) -> str:
         return r"""\{0 \le y <""" + f"""{val}""" r"""\}"""+ r"""x=""" + f"""{key}"""
 
+    def plotPoints(self, counts, multiplier):
+        num_pts = sum([v for (_, v) in counts.items()])
+        for (k, v) in counts.items():
+            v_s = (v/num_pts)*multiplier
+            self.draw(str(k), self.getLatexKV(k, v_s))
 

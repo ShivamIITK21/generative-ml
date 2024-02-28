@@ -30,6 +30,17 @@ class GaussianMixture:
     def getAllParams(self):
         return (self.bernouli_dist.getProbs(), [g.getMean() for g in self.gaussians_dists], [g.getVar() for g in self.gaussians_dists])
 
+    def sampleDummy(self, n: int):
+        counts = {}
+        for _ in range(0, n):
+            v = self.sample()
+            rounded = round(10*v)/10
+            if rounded not in counts:
+                counts[rounded] = 1
+            else:
+                counts[rounded] += 1
+        return counts
+
     def visualize(self, N: int, ts: float, multiplier: int):
         visual = Visualizer()
         counts = {}
