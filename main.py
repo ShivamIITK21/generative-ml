@@ -1,9 +1,16 @@
-from models.em_maximization.em_scaler import EMScaler
-from distributions.gaussian_mixture import GaussianMixture
+from distributions.gaussian import Gaussian
 from visual_utils.visualizer import Visualizer
+from monte_carlo_methods.rejection_sampler import RejectionSampler
+import math
+
+def dist(x : float):
+    if(x**2 > 1):
+        return 0
+    return math.sqrt(1-x**2)
 
 if __name__ == "__main__":
-    target = GaussianMixture([0, 1, 2], [0.1, 0.1, 0.1], [0.333, 0.333, 0.334])
-    model = EMScaler(5)
     vis = Visualizer()
-    model.visualize(vis, target)
+    rs = RejectionSampler(dist, Gaussian(0, 0.9*0.9), 2.7)
+    for _ in range(0, 10):
+        print(rs.sample())
+    rs.visualize(vis, 10)

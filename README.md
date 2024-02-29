@@ -10,7 +10,7 @@ This is a compilation of the generative ML techniques I learnt in EE698
 - [ ] Variational Autoencoder 
 - [ ] Autoencoder 
 - [ ] GANs 
-- [ ] Monte Carlo Sampling 
+- [x] Rejection Sampling 
 
 ### Visualizations
 Visualizations are done on desmos using [desmos-server](https://github.com/ShivamIITK21/desmos-server). Eg. the following shows iterations of EM Maximization
