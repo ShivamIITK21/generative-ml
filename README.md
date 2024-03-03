@@ -8,7 +8,7 @@ This is a compilation of the generative ML techniques I learnt in EE698
 - [ ] EM Maximization for Multivariate Gaussian Mixture 
 - [ ] EM Maximization for Bernoilli 
 - [x] Variational Autoencoder 
-- [ ] GANs 
+- [x] GANs 
 - [x] Rejection Sampling 
 
 ### Visualizations
