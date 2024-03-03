@@ -5,7 +5,9 @@ import torch.nn.functional as F
 class Encoder(nn.Module):
     def __init__(self, hidden_dims: int):
         super().__init__()
-        self.l1 = nn.Linear(784, 512)
+        self.c1 = nn.Conv2d(1, 32, kernel_size=3)
+        self.c2 = nn.Conv2d(32, 64, kernel_size=3)
+        self.l1 = nn.Linear(64*24*24, 512)
         self.l2 = nn.Linear(512, 512)
         self.l3 = nn.Linear(512, 256)
         self.l4 = nn.Linear(256, hidden_dims)
@@ -15,6 +17,8 @@ class Encoder(nn.Module):
         self.N.scale = self.N.scale.cuda()
 
     def forward(self, x: torch.Tensor):
+        x = F.relu(self.c1(x))
+        x = F.relu(self.c2(x))
         x = torch.flatten(x, start_dim=1)
         x = F.relu(self.l1(x)) 
         x = F.relu(self.l2(x))
@@ -49,9 +53,7 @@ if __name__ == "__main__":
     x = torch.rand(32, 1, 28, 28).to(device)
     encoder = Encoder(2).to(device)
     decoder = Decoder(2, 28*28).to(device)
-    encoder_mean, encoder_stddev = encoder(x)
-    print(f"encoder_mean = {encoder_mean.size()} encoder_stddev = {encoder_stddev.size()}")
-    z = torch.normal(encoder_mean, encoder_stddev)
+    encoder_mean, encoder_stddev, z= encoder(x)
     print(f"z={z.size()} encoder_mean={encoder_mean.size()} encoder_stddev={encoder_stddev.size()}")
     x_regen = decoder(z)
     print(f"Loss = {VAE_Loss(x, x_regen, encoder_mean, encoder_stddev).size()}")

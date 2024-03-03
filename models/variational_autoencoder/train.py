@@ -4,7 +4,7 @@ from model import Encoder, Decoder, VAE_Loss
 from torchvision import datasets
 from torch.utils.data import DataLoader
 import torch.optim as optim
-from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard.writer import SummaryWriter
 
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -58,3 +58,7 @@ if __name__ == "__main__":
                     writer_regen.add_image("Regenerated images", image_grid_regen, global_step=step)
                     step += 1
             
+    encoder_scripted = torch.jit.script(encoder)
+    decoder_scripted = torch.jit.script(decoder)
+    encoder_scripted.save("encoder_mnist_basic.pt")
+    decoder_scripted.save("decoder_mnist_basic.pt")
